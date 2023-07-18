@@ -24,6 +24,13 @@ let UsersController = exports.UsersController = class UsersController {
         const { id, name, password } = dto;
         await this.usersService.createUser(id, name, password);
     }
+    async findAll() {
+        const a = {
+            id: "JIN",
+            password: "PASSWORD",
+        };
+        return a;
+    }
 };
 __decorate([
     (0, common_1.Post)(),
@@ -32,6 +39,12 @@ __decorate([
     __metadata("design:paramtypes", [create_user_dto_1.CreateUserDto]),
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "createUser", null);
+__decorate([
+    (0, common_1.Get)(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "findAll", null);
 exports.UsersController = UsersController = __decorate([
     (0, common_1.Controller)('users'),
     __metadata("design:paramtypes", [users_service_1.UsersService])

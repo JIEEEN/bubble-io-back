@@ -39,9 +39,6 @@ export class UsersService {
     }
 
 
-    async login(id:string, password:string){
-        
-    }
 }
 
 

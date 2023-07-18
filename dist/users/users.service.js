@@ -45,8 +45,6 @@ let UsersService = exports.UsersService = class UsersService {
         user.password = await hash(password);
         await this.usersRepository.save(user);
     }
-    async login(id, password) {
-    }
 };
 exports.UsersService = UsersService = __decorate([
     (0, common_1.Injectable)(),

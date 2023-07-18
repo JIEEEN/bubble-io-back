@@ -6,5 +6,4 @@ export declare class UsersService {
     createUser(id: string, name: string, password: string): Promise<void>;
     checkUserExist(id: string): Promise<boolean>;
     saveUser(id: string, name: string, password: string): Promise<void>;
-    login(id: string, password: string): Promise<void>;
 }

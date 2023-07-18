@@ -2,6 +2,7 @@ import {
     Controller,
     Post,
     Body,
+    Get,
          } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
@@ -17,6 +18,12 @@ export class UsersController {
         await this.usersService.createUser(id, name, password);
     }
 
-    // @Post()
-    // async login(@Body())
+    @Get()
+    async findAll(){
+        const a = {
+            id: "JIN",
+            password: "PASSWORD",
+        }
+        return a;
+    }
 }
