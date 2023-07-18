@@ -26,7 +26,7 @@ export class UsersService {
             where: { id: id }
         })
 
-        return user !== undefined;
+        return user != undefined;
     }
 
     async saveUser(id:string, name:string, password:string){
