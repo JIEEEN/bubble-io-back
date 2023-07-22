@@ -20,7 +20,8 @@ exports.UsersModule = UsersModule = __decorate([
             typeorm_1.TypeOrmModule.forFeature([user_entity_1.UserEntity]),
         ],
         controllers: [users_controller_1.UsersController],
-        providers: [users_service_1.UsersService]
+        providers: [users_service_1.UsersService],
+        exports: [users_service_1.UsersService],
     })
 ], UsersModule);
 //# sourceMappingURL=users.module.js.map

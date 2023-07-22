@@ -4,6 +4,9 @@ import { UsersModule } from './users/users.module';
 import { ConfigModule } from '@nestjs/config';
 import { validationSchema } from './config/validationSchema';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { JwtModule } from '@nestjs/jwt';
+import { AuthService } from './auth/auth.service';
+import { AuthModule } from './auth/auth.module';
 import Joi from 'joi';
 
 @Module({
@@ -15,6 +18,12 @@ import Joi from 'joi';
       isGlobal: true,
       validationSchema,
     }),
+    JwtModule.register({
+      secret: process.env.AUTH_SECRET,
+      signOptions:{
+        expiresIn: '30m',
+      }
+    }),
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: process.env.DB_HOST,
@@ -25,8 +34,10 @@ import Joi from 'joi';
       entities: [__dirname + `/**/*.entity{.ts,.js}`],
       synchronize: process.env.DB_SYNC === 'true',
     }),
+    AuthModule,
   ], 
-  controllers: [AppController],
+  controllers: [AppController], 
+  providers: [AuthService],
   // providers: [AppService],
 }) 
 export class AppModule{}

@@ -14,7 +14,7 @@ const typeorm_1 = require("typeorm");
 let UserEntity = exports.UserEntity = class UserEntity {
 };
 __decorate([
-    (0, typeorm_1.PrimaryColumn)(),
+    (0, typeorm_1.PrimaryColumn)({ unique: true }),
     __metadata("design:type", String)
 ], UserEntity.prototype, "id", void 0);
 __decorate([

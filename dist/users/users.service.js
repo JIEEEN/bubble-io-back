@@ -36,7 +36,7 @@ let UsersService = exports.UsersService = class UsersService {
         const user = await this.usersRepository.findOne({
             where: { id: id }
         });
-        return user !== undefined;
+        return user != undefined;
     }
     async saveUser(id, name, password) {
         const user = new user_entity_1.UserEntity();
@@ -44,6 +44,11 @@ let UsersService = exports.UsersService = class UsersService {
         user.name = name;
         user.password = await hash(password);
         await this.usersRepository.save(user);
+    }
+    async findOne(id) {
+        return await this.usersRepository.findOne({
+            where: { id: id }
+        });
     }
 };
 exports.UsersService = UsersService = __decorate([

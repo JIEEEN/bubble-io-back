@@ -6,4 +6,5 @@ export declare class UsersService {
     createUser(id: string, name: string, password: string): Promise<void>;
     checkUserExist(id: string): Promise<boolean>;
     saveUser(id: string, name: string, password: string): Promise<void>;
+    findOne(id: string): Promise<UserEntity>;
 }
