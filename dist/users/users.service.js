@@ -46,9 +46,10 @@ let UsersService = exports.UsersService = class UsersService {
         await this.usersRepository.save(user);
     }
     async findOne(id) {
-        return await this.usersRepository.findOne({
+        const user = await this.usersRepository.findOne({
             where: { id: id }
         });
+        return user;
     }
 };
 exports.UsersService = UsersService = __decorate([
@@ -58,6 +59,6 @@ exports.UsersService = UsersService = __decorate([
 ], UsersService);
 const hash = async (plainPW) => {
     const saltOrRounds = 10;
-    return await bcrypt.hash(plainPW, saltOrRounds);
+    return await bcrypt.hashSync(plainPW, saltOrRounds);
 };
 //# sourceMappingURL=users.service.js.map

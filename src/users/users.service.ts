@@ -39,16 +39,18 @@ export class UsersService {
     }
 
     async findOne(id:string): Promise<UserEntity>{
-        return await this.usersRepository.findOne({
-            where: { id: id }            
-        })
+        const user = await this.usersRepository.findOne({
+            where: { id: id }
+        });
+
+        return user;
     }
 }
 
 
 const hash = async(plainPW: string): Promise<string> => {
     const saltOrRounds = 10;
-    return await bcrypt.hash(plainPW, saltOrRounds);
+    return await bcrypt.hashSync(plainPW, saltOrRounds);
 }
 
 

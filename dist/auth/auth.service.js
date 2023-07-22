@@ -21,8 +21,7 @@ let AuthService = exports.AuthService = class AuthService {
     }
     async signIn(id, pass) {
         const user = await this.usersService.findOne(id);
-        console.log(pass, user.password);
-        const pwdMatch = await bcrypt.compare(pass, user.password);
+        const pwdMatch = await bcrypt.compareSync(pass, user.password);
         if (!pwdMatch) {
             throw new common_1.UnauthorizedException();
         }
