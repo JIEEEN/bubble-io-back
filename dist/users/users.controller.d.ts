@@ -4,8 +4,4 @@ export declare class UsersController {
     private readonly usersService;
     constructor(usersService: UsersService);
     createUser(dto: CreateUserDto): Promise<void>;
-    findAll(): Promise<{
-        id: string;
-        password: string;
-    }>;
 }
