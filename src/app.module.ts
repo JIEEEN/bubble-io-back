@@ -36,8 +36,8 @@ import { EventsModule } from './events/events.module';
     AuthModule,
     EventsModule,
   ], 
-  controllers: [AppController, EventsController], 
-  providers: [AuthService, EventsService],
+  controllers: [AppController], 
+  providers: [AuthService],
   // providers: [AppService],
 }) 
 export class AppModule{}
