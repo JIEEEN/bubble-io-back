@@ -7,8 +7,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthService } from './auth/auth.service';
 import { AuthModule } from './auth/auth.module';
-import { EventsGateway } from './socket';
-
+import { EventsController } from './events/events.controller';
+import { EventsService } from './events/events.service';
+import { EventsModule } from './events/events.module';
 @Module({
   imports:[
     UsersModule,
@@ -35,10 +36,10 @@ import { EventsGateway } from './socket';
       synchronize: process.env.DB_SYNC === 'true',
     }),
     AuthModule,
-    EventsGateway,
+    EventsModule,
   ], 
-  controllers: [AppController], 
-  providers: [AuthService],
+  controllers: [AppController, EventsController], 
+  providers: [AuthService, EventsService],
   // providers: [AppService],
 }) 
 export class AppModule{}

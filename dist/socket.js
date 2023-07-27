@@ -32,6 +32,6 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], EventsGateway.prototype, "handleMessage", null);
 exports.EventsGateway = EventsGateway = __decorate([
-    (0, websockets_1.WebSocketGateway)(8080, { transports: ['websocket'] })
+    (0, websockets_1.WebSocketGateway)(8080, { namespace: 'events' })
 ], EventsGateway);
 //# sourceMappingURL=socket.js.map
