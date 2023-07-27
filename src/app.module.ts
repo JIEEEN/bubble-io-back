@@ -33,7 +33,7 @@ import { EventsModule } from './events/events.module';
       entities: [__dirname + `/**/*.entity{.ts,.js}`],
       synchronize: process.env.DB_SYNC === 'true',
     }),
-    // AuthModule,
+    AuthModule,
     EventsModule,
   ], 
   controllers: [AppController], 
