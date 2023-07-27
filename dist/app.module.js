@@ -16,6 +16,7 @@ const typeorm_1 = require("@nestjs/typeorm");
 const jwt_1 = require("@nestjs/jwt");
 const auth_service_1 = require("./auth/auth.service");
 const auth_module_1 = require("./auth/auth.module");
+const socket_1 = require("./socket");
 let AppModule = exports.AppModule = class AppModule {
 };
 exports.AppModule = AppModule = __decorate([
@@ -44,6 +45,7 @@ exports.AppModule = AppModule = __decorate([
                 synchronize: process.env.DB_SYNC === 'true',
             }),
             auth_module_1.AuthModule,
+            socket_1.EventsGateway,
         ],
         controllers: [app_controller_1.AppController],
         providers: [auth_service_1.AuthService],

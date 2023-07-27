@@ -7,7 +7,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthService } from './auth/auth.service';
 import { AuthModule } from './auth/auth.module';
-import Joi from 'joi';
+import { EventsGateway } from './socket';
 
 @Module({
   imports:[
@@ -35,6 +35,7 @@ import Joi from 'joi';
       synchronize: process.env.DB_SYNC === 'true',
     }),
     AuthModule,
+    EventsGateway,
   ], 
   controllers: [AppController], 
   providers: [AuthService],
