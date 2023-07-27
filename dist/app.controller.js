@@ -12,10 +12,19 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppController = void 0;
 const common_1 = require("@nestjs/common");
 let AppController = exports.AppController = class AppController {
+    check() {
+        return 'Hello NestJS';
+    }
     db() {
         return process.env.DB_HOST;
     }
 };
+__decorate([
+    (0, common_1.Get)('/'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", String)
+], AppController.prototype, "check", null);
 __decorate([
     (0, common_1.Get)('/get-db-from-config'),
     __metadata("design:type", Function),

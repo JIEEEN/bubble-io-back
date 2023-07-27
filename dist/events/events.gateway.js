@@ -15,23 +15,38 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.EventsGateway = void 0;
 const websockets_1 = require("@nestjs/websockets");
 const socket_io_1 = require("socket.io");
+const common_1 = require("@nestjs/common");
 let EventsGateway = exports.EventsGateway = class EventsGateway {
-    async handleMessage(data) {
-        this.server.emit('ServerToClient', data);
+    constructor() {
+        this.logger = new common_1.Logger('EventsGateway');
+    }
+    afterInit(server) {
+        this.logger.log('Initialized');
+    }
+    handleDisconnect(client) {
+        this.logger.log(`Client disconnected: ${client}`);
+    }
+    handleConnection(client, ...args) {
+        this.logger.log(`Client connected: ${client}`);
+    }
+    findAll(data) {
+        console.log(data);
     }
 };
 __decorate([
     (0, websockets_1.WebSocketServer)(),
-    __metadata("design:type", socket_io_1.Server)
-], EventsGateway.prototype, "server", void 0);
+    __metadata("design:type", socket_io_1.Namespace)
+], EventsGateway.prototype, "namespace", void 0);
 __decorate([
-    (0, websockets_1.SubscribeMessage)('ClientToServer'),
+    (0, websockets_1.SubscribeMessage)('hello'),
     __param(0, (0, websockets_1.MessageBody)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", Promise)
-], EventsGateway.prototype, "handleMessage", null);
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], EventsGateway.prototype, "findAll", null);
 exports.EventsGateway = EventsGateway = __decorate([
-    (0, websockets_1.WebSocketGateway)(8080, { namespace: 'events' })
+    (0, websockets_1.WebSocketGateway)({
+        namespace: 'events',
+    })
 ], EventsGateway);
-//# sourceMappingURL=socket.js.map
+//# sourceMappingURL=events.gateway.js.map
