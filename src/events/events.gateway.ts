@@ -9,7 +9,7 @@ interface roomMessage extends loginMessage{
     message: string;
 }
 
-@WebSocketGateway({
+@WebSocketGateway(8080, {
     namespace: 'events',
     transports: ['websocket'],
 })
@@ -50,7 +50,8 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     }
 
     @SubscribeMessage('hello')
-    findAll(@MessageBody() data: string){
-        console.log(data);
+    findAll(@MessageBody() data: string,
+            @ConnectedSocket() client: Socket): string{
+        return data;
     }
 }
