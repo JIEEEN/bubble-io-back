@@ -15,6 +15,7 @@ const validationSchema_1 = require("./config/validationSchema");
 const typeorm_1 = require("@nestjs/typeorm");
 const jwt_1 = require("@nestjs/jwt");
 const auth_service_1 = require("./auth/auth.service");
+const auth_module_1 = require("./auth/auth.module");
 const events_module_1 = require("./events/events.module");
 let AppModule = exports.AppModule = class AppModule {
 };
@@ -43,6 +44,7 @@ exports.AppModule = AppModule = __decorate([
                 entities: [__dirname + `/**/*.entity{.ts,.js}`],
                 synchronize: process.env.DB_SYNC === 'true',
             }),
+            auth_module_1.AuthModule,
             events_module_1.EventsModule,
         ],
         controllers: [app_controller_1.AppController],
