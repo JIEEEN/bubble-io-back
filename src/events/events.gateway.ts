@@ -11,6 +11,7 @@ interface roomMessage extends loginMessage{
 
 @WebSocketGateway({
     namespace: 'events',
+    transports: ['websocket'],
 })
 export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
@@ -49,7 +50,7 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     }
 
     @SubscribeMessage('hello')
-    findAll(@MessageBody() data: any){
-        this.namespace.adapter.broadcast('hello', data);
+    findAll(@MessageBody() data: string){
+        console.log(data);
     }
 }
