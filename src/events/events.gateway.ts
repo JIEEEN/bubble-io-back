@@ -14,16 +14,34 @@ interface roomMessage extends loginMessage{
 })
 export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
+    constructor(){}
+
     @WebSocketServer()
     namespace: Namespace;
     private logger: Logger = new Logger('EventsGateway');
     
     afterInit(server: Namespace){
         this.logger.log('Initialized');
+        this.namespace.adapter.on('create-room', (room) => {
+            console.log(`Created room ${room}`);
+        });
+
+        this.namespace.adapter.on('join-room', (room) => {
+            console.log(`Created room ${room}`);
+        });
+
+        this.namespace.adapter.on('leave-room', (room) => {
+            console.log(`Created room ${room}`);
+        });
+
+        this.namespace.adapter.on('delete-room', (room) => {
+            console.log(`Deleted room ${room}`);
+        });
     }
 
     handleDisconnect(client: Namespace){
         this.logger.log(`Client disconnected: ${client}`);
+        console.log()
     }
 
     handleConnection(client: Namespace, ...args: any[]){
@@ -31,7 +49,7 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     }
 
     @SubscribeMessage('hello')
-    findAll(@MessageBody() data: string){
-        console.log(data);
+    findAll(@MessageBody() data: any){
+        this.namespace.adapter.broadcast('hello', data);
     }
 }
