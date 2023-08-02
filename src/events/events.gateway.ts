@@ -1,57 +1,55 @@
-import { WsResponse, MessageBody, OnGatewayDisconnect, WebSocketServer, OnGatewayInit, WebSocketGateway, OnGatewayConnection, ConnectedSocket, SubscribeMessage } from "@nestjs/websockets";
-import { Namespace, Server, Socket } from "socket.io";
+import { MessageBody, WebSocketServer, WebSocketGateway, ConnectedSocket, SubscribeMessage } from "@nestjs/websockets";
+import { Namespace, Socket } from "socket.io";
 import { Logger } from "@nestjs/common";
 
-interface loginMessage{
-    user: string;
-}
-interface roomMessage extends loginMessage{
-    message: string;
-}
-
-@WebSocketGateway(8080, {
+@WebSocketGateway({
     namespace: 'events',
     transports: ['websocket'],
+    cors: {
+        origin: "*",
+        credentials: true,
+    }
 })
-export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
-{
-    constructor(){}
+export class EventsGateway {
+    constructor() { }
+    private rooms: Object[] = [];
 
     @WebSocketServer()
     namespace: Namespace;
-    private logger: Logger = new Logger('EventsGateway');
-    
-    afterInit(server: Namespace){
-        this.logger.log('Initialized');
-        this.namespace.adapter.on('create-room', (room) => {
-            console.log(`Created room ${room}`);
+    // private logger: Logger = new Logger('EventsGateway');
+
+    @SubscribeMessage('message')
+    findAll(@MessageBody() data: any,
+        @ConnectedSocket() client: Socket) {
+        this.namespace.to(data['room']).emit('message', data['message']);
+    };
+
+    @SubscribeMessage('createRoom')
+    joinRoom(@MessageBody() data: any,
+        @ConnectedSocket() client: Socket) {
+        client.join(data);
+        console.log(`Client ${client.id} joined room ${data.room}, ${data.roompwd}`
+        );
+        this.rooms.push({ roomNum: data.room, roomPwd: data.roompwd });
+        this.namespace.to(data).emit('message', {
+            clientId: client.id,
+            roomNum: data.room,
+            roomPwd: data.roompwd
         });
+        this.namespace.emit('roomList', this.rooms);
+    };
 
-        this.namespace.adapter.on('join-room', (room) => {
-            console.log(`Created room ${room}`);
-        });
+    @SubscribeMessage('getRoomList')
+    getRoomList(@MessageBody() data: any,
+        @ConnectedSocket() client: Socket) {
+        this.namespace.emit('roomList', this.rooms);
+    };
 
-        this.namespace.adapter.on('leave-room', (room) => {
-            console.log(`Created room ${room}`);
-        });
-
-        this.namespace.adapter.on('delete-room', (room) => {
-            console.log(`Deleted room ${room}`);
-        });
-    }
-
-    handleDisconnect(client: Namespace){
-        this.logger.log(`Client disconnected: ${client}`);
-        console.log()
-    }
-
-    handleConnection(client: Namespace, ...args: any[]){
-        this.logger.log(`Client connected: ${client}`);
-    }
-
-    @SubscribeMessage('hello')
-    findAll(@MessageBody() data: string,
-            @ConnectedSocket() client: Socket): string{
-        return data;
+    @SubscribeMessage('deleteRoom')
+    deleteRoom(@MessageBody() data: any,
+        @ConnectedSocket() client: Socket) {
+            console.log(this.rooms);
+            this.rooms = this.rooms.filter((room) => room['roomNum']!== data.room.roomNum || room['roomPwd'] !== data.room.roomPwd);
+            this.namespace.emit('roomList', this.rooms);
     }
 }

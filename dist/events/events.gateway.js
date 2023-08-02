@@ -15,22 +15,34 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.EventsGateway = void 0;
 const websockets_1 = require("@nestjs/websockets");
 const socket_io_1 = require("socket.io");
-const common_1 = require("@nestjs/common");
 let EventsGateway = exports.EventsGateway = class EventsGateway {
     constructor() {
-        this.logger = new common_1.Logger('EventsGateway');
+        this.rooms = [];
     }
-    afterInit(server) {
-        this.logger.log('Initialized');
+    findAll(data, client) {
+        this.namespace.to(data['room']).emit('message', data['message']);
     }
-    handleDisconnect(client) {
-        this.logger.log(`Client disconnected: ${client}`);
+    ;
+    joinRoom(data, client) {
+        client.join(data);
+        console.log(`Client ${client.id} joined room ${data.room}, ${data.roompwd}`);
+        this.rooms.push({ roomNum: data.room, roomPwd: data.roompwd });
+        this.namespace.to(data).emit('message', {
+            clientId: client.id,
+            roomNum: data.room,
+            roomPwd: data.roompwd
+        });
+        this.namespace.emit('roomList', this.rooms);
     }
-    handleConnection(client, ...args) {
-        this.logger.log(`Client connected: ${client}`);
+    ;
+    getRoomList(data, client) {
+        this.namespace.emit('roomList', this.rooms);
     }
-    findAll(data) {
-        console.log(data);
+    ;
+    deleteRoom(data, client) {
+        console.log(this.rooms);
+        this.rooms = this.rooms.filter((room) => room['roomNum'] !== data.room.roomNum || room['roomPwd'] !== data.room.roomPwd);
+        this.namespace.emit('roomList', this.rooms);
     }
 };
 __decorate([
@@ -38,15 +50,46 @@ __decorate([
     __metadata("design:type", socket_io_1.Namespace)
 ], EventsGateway.prototype, "namespace", void 0);
 __decorate([
-    (0, websockets_1.SubscribeMessage)('hello'),
+    (0, websockets_1.SubscribeMessage)('message'),
     __param(0, (0, websockets_1.MessageBody)()),
+    __param(1, (0, websockets_1.ConnectedSocket)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [Object, socket_io_1.Socket]),
     __metadata("design:returntype", void 0)
 ], EventsGateway.prototype, "findAll", null);
+__decorate([
+    (0, websockets_1.SubscribeMessage)('createRoom'),
+    __param(0, (0, websockets_1.MessageBody)()),
+    __param(1, (0, websockets_1.ConnectedSocket)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, socket_io_1.Socket]),
+    __metadata("design:returntype", void 0)
+], EventsGateway.prototype, "joinRoom", null);
+__decorate([
+    (0, websockets_1.SubscribeMessage)('getRoomList'),
+    __param(0, (0, websockets_1.MessageBody)()),
+    __param(1, (0, websockets_1.ConnectedSocket)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, socket_io_1.Socket]),
+    __metadata("design:returntype", void 0)
+], EventsGateway.prototype, "getRoomList", null);
+__decorate([
+    (0, websockets_1.SubscribeMessage)('deleteRoom'),
+    __param(0, (0, websockets_1.MessageBody)()),
+    __param(1, (0, websockets_1.ConnectedSocket)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, socket_io_1.Socket]),
+    __metadata("design:returntype", void 0)
+], EventsGateway.prototype, "deleteRoom", null);
 exports.EventsGateway = EventsGateway = __decorate([
     (0, websockets_1.WebSocketGateway)({
         namespace: 'events',
-    })
+        transports: ['websocket'],
+        cors: {
+            origin: "*",
+            credentials: true,
+        }
+    }),
+    __metadata("design:paramtypes", [])
 ], EventsGateway);
 //# sourceMappingURL=events.gateway.js.map
