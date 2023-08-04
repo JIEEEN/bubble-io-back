@@ -25,17 +25,16 @@ export class EventsGateway {
     };
 
     @SubscribeMessage('createRoom')
-    joinRoom(@MessageBody() data: any,
+    createRoom(@MessageBody() data: any,
         @ConnectedSocket() client: Socket) {
-        client.join(data);
-        console.log(`Client ${client.id} joined room ${data.room}, ${data.roompwd}`
-        );
-        this.rooms.push({ roomNum: data.room, roomPwd: data.roompwd });
-        this.namespace.to(data).emit('message', {
-            clientId: client.id,
+        const newRoom = {
             roomNum: data.room,
-            roomPwd: data.roompwd
-        });
+            roomPwd: data.roompwd,
+            index: this.rooms.length
+        }
+        client.join(newRoom.roomNum);
+        console.log(`Client ${client.id} joined room ${newRoom.roomNum}`);
+        this.rooms.push({ roomNum: data.room, roomPwd: data.roompwd, index: this.rooms.length });
         this.namespace.emit('roomList', this.rooms);
     };
 
@@ -45,11 +44,35 @@ export class EventsGateway {
         this.namespace.emit('roomList', this.rooms);
     };
 
+    @SubscribeMessage('joinRoom')
+    joinRoom(@MessageBody() data: any,
+        @ConnectedSocket() client: Socket) {
+        const joinedRoom = {
+            roomNum: data.room.roomNum,
+            roomPwd: data.room.roomPwd,
+            index: data.room.index,
+        }
+        client.join(data.room);
+        console.log(`Client ${client.id} joined room ${joinedRoom.roomNum}, ${joinedRoom.roomPwd}`);
+    };
+
     @SubscribeMessage('deleteRoom')
     deleteRoom(@MessageBody() data: any,
         @ConnectedSocket() client: Socket) {
-            console.log(this.rooms);
-            this.rooms = this.rooms.filter((room) => room['roomNum']!== data.room.roomNum || room['roomPwd'] !== data.room.roomPwd);
-            this.namespace.emit('roomList', this.rooms);
+        console.log(this.rooms);
+        this.rooms = this.rooms.filter((room) => room['roomNum'] !== data.room.roomNum
+            || room['roomPwd'] !== data.room.roomPwd
+            || room['index'] !== data.room.index);
+        this.rooms = reindex(this.rooms);
+        this.namespace.emit('roomList', this.rooms);
+        console.log(this.rooms);
     }
+}
+
+const reindex = arr => {
+    let i = 0;
+    return arr.map(item => {
+        item.index = i++;
+        return item;
+    });
 }

@@ -23,15 +23,15 @@ let EventsGateway = exports.EventsGateway = class EventsGateway {
         this.namespace.to(data['room']).emit('message', data['message']);
     }
     ;
-    joinRoom(data, client) {
-        client.join(data);
-        console.log(`Client ${client.id} joined room ${data.room}, ${data.roompwd}`);
-        this.rooms.push({ roomNum: data.room, roomPwd: data.roompwd });
-        this.namespace.to(data).emit('message', {
-            clientId: client.id,
+    createRoom(data, client) {
+        const newRoom = {
             roomNum: data.room,
-            roomPwd: data.roompwd
-        });
+            roomPwd: data.roompwd,
+            index: this.rooms.length
+        };
+        client.join(newRoom.roomNum);
+        console.log(`Client ${client.id} joined room ${newRoom.roomNum}`);
+        this.rooms.push({ roomNum: data.room, roomPwd: data.roompwd, index: this.rooms.length });
         this.namespace.emit('roomList', this.rooms);
     }
     ;
@@ -39,10 +39,24 @@ let EventsGateway = exports.EventsGateway = class EventsGateway {
         this.namespace.emit('roomList', this.rooms);
     }
     ;
+    joinRoom(data, client) {
+        const joinedRoom = {
+            roomNum: data.room.roomNum,
+            roomPwd: data.room.roomPwd,
+            index: data.room.index,
+        };
+        client.join(data.room);
+        console.log(`Client ${client.id} joined room ${joinedRoom.roomNum}, ${joinedRoom.roomPwd}`);
+    }
+    ;
     deleteRoom(data, client) {
         console.log(this.rooms);
-        this.rooms = this.rooms.filter((room) => room['roomNum'] !== data.room.roomNum || room['roomPwd'] !== data.room.roomPwd);
+        this.rooms = this.rooms.filter((room) => room['roomNum'] !== data.room.roomNum
+            || room['roomPwd'] !== data.room.roomPwd
+            || room['index'] !== data.room.index);
+        this.rooms = reindex(this.rooms);
         this.namespace.emit('roomList', this.rooms);
+        console.log(this.rooms);
     }
 };
 __decorate([
@@ -64,7 +78,7 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, socket_io_1.Socket]),
     __metadata("design:returntype", void 0)
-], EventsGateway.prototype, "joinRoom", null);
+], EventsGateway.prototype, "createRoom", null);
 __decorate([
     (0, websockets_1.SubscribeMessage)('getRoomList'),
     __param(0, (0, websockets_1.MessageBody)()),
@@ -73,6 +87,14 @@ __decorate([
     __metadata("design:paramtypes", [Object, socket_io_1.Socket]),
     __metadata("design:returntype", void 0)
 ], EventsGateway.prototype, "getRoomList", null);
+__decorate([
+    (0, websockets_1.SubscribeMessage)('joinRoom'),
+    __param(0, (0, websockets_1.MessageBody)()),
+    __param(1, (0, websockets_1.ConnectedSocket)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, socket_io_1.Socket]),
+    __metadata("design:returntype", void 0)
+], EventsGateway.prototype, "joinRoom", null);
 __decorate([
     (0, websockets_1.SubscribeMessage)('deleteRoom'),
     __param(0, (0, websockets_1.MessageBody)()),
@@ -92,4 +114,11 @@ exports.EventsGateway = EventsGateway = __decorate([
     }),
     __metadata("design:paramtypes", [])
 ], EventsGateway);
+const reindex = arr => {
+    let i = 0;
+    return arr.map(item => {
+        item.index = i++;
+        return item;
+    });
+};
 //# sourceMappingURL=events.gateway.js.map

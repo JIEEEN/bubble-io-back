@@ -4,7 +4,8 @@ export declare class EventsGateway {
     private rooms;
     namespace: Namespace;
     findAll(data: any, client: Socket): void;
-    joinRoom(data: any, client: Socket): void;
+    createRoom(data: any, client: Socket): void;
     getRoomList(data: any, client: Socket): void;
+    joinRoom(data: any, client: Socket): void;
     deleteRoom(data: any, client: Socket): void;
 }
