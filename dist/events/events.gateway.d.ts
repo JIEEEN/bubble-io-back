@@ -8,4 +8,5 @@ export declare class EventsGateway {
     getRoomList(data: any, client: Socket): void;
     joinRoom(data: any, client: Socket): void;
     deleteRoom(data: any, client: Socket): void;
+    playerPos(data: any, client: Socket): void;
 }

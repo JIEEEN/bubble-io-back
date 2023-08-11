@@ -54,7 +54,7 @@ export class EventsGateway {
         }
         client.join(data.room);
         console.log(`Client ${client.id} joined room ${joinedRoom.roomNum}, ${joinedRoom.roomPwd}`);
-    };
+    }; 
 
     @SubscribeMessage('deleteRoom')
     deleteRoom(@MessageBody() data: any,
@@ -66,6 +66,14 @@ export class EventsGateway {
         this.rooms = reindex(this.rooms);
         this.namespace.emit('roomList', this.rooms);
         console.log(this.rooms);
+    }
+
+    @SubscribeMessage('playerPos')
+    playerPos(@MessageBody() data: any,
+        @ConnectedSocket() client: Socket) {
+        // console.log(data);
+        // this.namespace.to(data['room']).emit('playerPos', data['pos']);
+        client.broadcast.emit('playerPos', data);
     }
 }
 

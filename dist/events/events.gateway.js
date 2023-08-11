@@ -58,6 +58,9 @@ let EventsGateway = exports.EventsGateway = class EventsGateway {
         this.namespace.emit('roomList', this.rooms);
         console.log(this.rooms);
     }
+    playerPos(data, client) {
+        client.broadcast.emit('playerPos', data);
+    }
 };
 __decorate([
     (0, websockets_1.WebSocketServer)(),
@@ -103,6 +106,14 @@ __decorate([
     __metadata("design:paramtypes", [Object, socket_io_1.Socket]),
     __metadata("design:returntype", void 0)
 ], EventsGateway.prototype, "deleteRoom", null);
+__decorate([
+    (0, websockets_1.SubscribeMessage)('playerPos'),
+    __param(0, (0, websockets_1.MessageBody)()),
+    __param(1, (0, websockets_1.ConnectedSocket)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, socket_io_1.Socket]),
+    __metadata("design:returntype", void 0)
+], EventsGateway.prototype, "playerPos", null);
 exports.EventsGateway = EventsGateway = __decorate([
     (0, websockets_1.WebSocketGateway)({
         namespace: 'events',
